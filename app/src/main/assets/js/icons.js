@@ -109,7 +109,18 @@ BO.icons = {
       "stroke-width": 8,
     },
   ],
-
+  "info": [
+    {
+      "tagName": "circle",
+      "cx": 32, "cy": 14, "r": 12,
+      "stroke-width": 0,
+    },
+    {
+      "tagName": "path",
+      "d": "M 24 30 L 24 62 L 40 62 L 40 30 z",
+      "stroke-width": 0,
+    },
+  ],
 
 };
 

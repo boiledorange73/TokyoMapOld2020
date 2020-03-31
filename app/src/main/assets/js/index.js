@@ -11,15 +11,24 @@ function setAndroidVersionCode(versioncode) {
   BO.versioncode = versioncode;
 }
 
+// 2020-03-30 Added.
+function setAppNameVer(appName, appVer) {
+  window.BO = window.BO || {};
+  BO.appName = appName;
+  BO.appVer = appVer;
+}
+
 
 window.onload = function() {
   var resources = new BO.resources({
+    "app_name": ["Tokyo Map Old", {"ja": "東京古い地図"}], // 2020-03-30 Added
     "rapid": ["Rapid Survey Map", {"ja": "迅速測図"}],
     "tokyo5000": ["Tokyo 1:5000", {"ja": "東京 1:5000"}],
     "gsiort": ["Ortho", {"ja": "オルソ画像"}],
     "gsistd": ["Standard", {"ja": "標準地図"}],
     "gsitile": ["GSI Tile", {"ja": "地理院タイル"}],
     "naro": ["NARO", {"ja": "農研機構"}],
+    "dismiss": ["Dismiss", {"ja": "閉じる"}],
     "locationerror": ["Error occurred while getting location.",{"ja": "位置情報取得時にエラーが発生しました。"}],
   });
   var layersettings = [
@@ -164,6 +173,19 @@ function initCommands(map, mapconsole, resources) {
           latest_coords = null;
         }
       }
+    }
+  );
+  // 2020-03-30 Added: info window.
+  var info = new BO.Info(
+    document.getElementById("MAPINFO-ROOT"),
+    resources.get("dismiss"),
+  );
+  mapconsole.addCommandButton(null, "info",
+    function(e){
+      info.show({
+        "appname": BO.appName ? BO.appName : resources.get("app_name"),
+        "appver" : BO.appVer,
+      });
     }
   );
 }

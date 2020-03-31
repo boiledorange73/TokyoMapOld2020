@@ -1,9 +1,11 @@
 package com.gmail.boiledorange73.app.tokyomapold2020
+
 import android.Manifest
 import android.annotation.TargetApi
 import android.content.ActivityNotFoundException
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
@@ -100,12 +102,8 @@ class MainActivity : AppCompatActivity() {
                     // SDK < 23 OR already granted, accepts without a prompt.
                     callback.invoke(origin, true, true)
                 } else {
-                    if (!ActivityCompat.shouldShowRequestPermissionRationale(this@MainActivity, permission) ) {
-                        // Asks the user for permission
-                        ActivityCompat.requestPermissions(this@MainActivity, arrayOf(permission), RC_LOCATION)
-                        // Used in onRequestPermissionsResult()
-                        mGeolocationOrigin = origin
-                        mGeolocationCallback = callback
+                    mHandler.run {
+                        this@MainActivity.permissionCheck(origin, callback)
                     }
                 }
             }
@@ -145,6 +143,7 @@ class MainActivity : AppCompatActivity() {
             // page loaded
             override fun onPageFinished(view: WebView?,url: String?) {
                 webview.loadUrl("javascript:setAndroidVersionCode(" + Build.VERSION.SDK_INT + ")")
+                webview.loadUrl("javascript:setAppNameVer(\"" + this@MainActivity.getString(R.string.app_name) + "\", " + getAppVerEnc() + ")")
             }
             /**
              * Start external browser with GET method
@@ -161,10 +160,28 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+        // 2020-03-30: Added.
+        // Checks and requests permission.
+        mHandler.run {
+            permissionCheck(null, null)
+        }
         // starts the map application
         webview.loadUrl("file:///android_asset/index.html")
     }
 
+    fun getAppVerEnc(): String? {
+        var v:String? = null
+        try {
+            val packageInfo: PackageInfo = packageManager.getPackageInfo(packageName, 0)
+            v = packageInfo.versionName
+        } catch (e: PackageManager.NameNotFoundException) {
+            e.printStackTrace()
+        }
+        if( v != null ) {
+            return "\"" + v + "\""
+        }
+        return "null"
+    }
     /**
      * Called when requestPermissions finished.
      *
@@ -186,6 +203,24 @@ class MainActivity : AppCompatActivity() {
                 mGeolocationCallback = null
                 mGeolocationOrigin = null
             }
+        }
+    }
+
+    /**
+     * Checks and requests permission. 2020-03-30: Added, from onGeolocationPermissionsShowPrompt().
+     */
+    private fun permissionCheck(geolocationOrigin: String?, geolocationCallback: GeolocationPermissions.Callback?) {
+        val permission = Manifest.permission.ACCESS_FINE_LOCATION
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || ContextCompat.checkSelfPermission(this@MainActivity, permission) == PackageManager.PERMISSION_GRANTED ) {
+            // SDK < 23 OR already granted, accepts without a prompt.
+            geolocationCallback?.invoke(geolocationOrigin, true, true)
+            return;
+        }
+        if (!ActivityCompat.shouldShowRequestPermissionRationale(this@MainActivity, permission) ) {
+            mGeolocationOrigin = geolocationOrigin
+            mGeolocationCallback = geolocationCallback
+            // Asks the user for permission
+            ActivityCompat.requestPermissions(this@MainActivity, arrayOf(permission), RC_LOCATION)
         }
     }
 }

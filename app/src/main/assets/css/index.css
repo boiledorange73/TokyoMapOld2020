@@ -29,6 +29,39 @@ HTML, body, #MAIN {
   max-height: 90%;
 }
 
+#MAPINFO-ROOT {
+  z-index: 1000; /* leaflet set by 200 */
+  position: absolute;
+  top: 10%;
+  left: 0;
+  right: 0;
+  margin: auto;
+  max-width: 90%;
+  max-height: 70%;
+  display: none;
+}
+
+#MAPINFO {
+  margin: auto;
+  padding: 1em;
+  background: #fff;
+  border: solid 1px #999;
+  border-radius: 1em;
+  overflow: auto;
+  text-align: center;
+}
+
+#MAPINFO-APPNAME,
+#MAPINFO-APPVER {
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+#MAPINFO-DISMISS {
+  margin-top: 1em;
+  padding: 0.25em;
+}
+
 #MAPCONSOLE {
   position: absolute;
   left: 0;
