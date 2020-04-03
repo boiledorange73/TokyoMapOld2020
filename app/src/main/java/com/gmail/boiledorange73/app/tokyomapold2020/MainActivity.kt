@@ -36,9 +36,11 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Enable webview debug (via chrome://inspect)
+        /*
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             WebView.setWebContentsDebuggingEnabled(true)
         }
+        */
         // Initialization
         mHandler = Handler()
         supportActionBar!!.hide()
