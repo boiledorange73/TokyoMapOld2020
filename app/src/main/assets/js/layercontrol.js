@@ -4,6 +4,28 @@ if( window.BO == null ) {
 
 
 BO.generateLayerControl = function(layers, options) {
+  function addClassName(e, cn) {
+    var arr = e.className.split(/\s+/);
+    for( var n = 0; n < arr.length; n++ ) {
+      if( arr[n] == cn ) {
+        return; // already exists.
+      }
+    }
+    e.className = e.className + " " + cn;
+  }
+  function removeClassName(e, cn) {
+    var arr_now = e.className.split(/\s+/);
+    var className = "";
+    var delimiter = "";
+    for( var n = 0; n < arr_now.length; n++ ) {
+      if( arr_now[n] != cn ) {
+        className = className + delimiter + arr_now[n];
+        delimiter = " ";
+      }
+    }
+    e.className = className;
+  }
+
   // creates constructor
   var LayerControl = L.Control.extend({
     "options": {
@@ -13,6 +35,25 @@ BO.generateLayerControl = function(layers, options) {
       L.Util.setOptions(this, options);
       this._layers = layers || [];
     },
+    "_listVisible": function(visible) {
+      //
+      if( !(visible === true || visible === false) ) {
+//        visible = !(this._e_list.style.display == "block");
+        visible = !(this._e_list.style.visibility != "hidden");
+      }
+      if( visible ) {
+//        this._e_list.style.display = "block";
+        this._e_list.style.visibility = "visible";
+        this._svg_tup.style.display = "inline-block";
+        this._svg_tdown.style.display = "none";
+      }
+      else {
+//        this._e_list.style.display = "none";
+        this._e_list.style.visibility = "hidden";
+        this._svg_tup.style.display = "none";
+        this._svg_tdown.style.display = "inline-block";
+      }
+    },
     /**
      * Called when this control adds to the map.
      * @parm map L.Map instance.
@@ -21,15 +62,48 @@ BO.generateLayerControl = function(layers, options) {
     "onAdd": function(map) {
       this._map = map;
       // creates dom elements
-      var className = "bo-layercontrol-select";
-      this._e_root = L.DomUtil.create("form", className);
-      this._e_root.method = "GET";
-      this._e_root.action = "javascript:void(0)";
-      this._e_select = L.DomUtil.create("select");
-      this._e_root.appendChild(this._e_select);
-      L.DomEvent.on(this._e_select, "change", this._onSelectChange, this);
+      // 2020-04-03 changed
+      this._e_root = L.DomUtil.create("div", "bo-layercontrol-root");
+      // toggle
+      this._e_labelwrap = L.DomUtil.create("div", "bo-layercontrol-labelwrap", this._e_root);
+      this._e_label = L.DomUtil.create("div", "bo-layercontrol-label", this._e_labelwrap);
+      this._e_labelswitch = L.DomUtil.create("div", "bo-layercontrol-labelswitch", this._e_labelwrap);
+      this._svg_tup = BO.createInlineSvg(BO.icons["tup"]);
+      this._svg_tdown = BO.createInlineSvg(BO.icons["tdown"]);
+      this._e_labelswitch.appendChild(this._svg_tup);
+      this._e_labelswitch.appendChild(this._svg_tdown);
+      this._e_list = L.DomUtil.create("ul", "bo-layercontrol-list", this._e_root);
+      this._listVisible(false);
       //
-      this._update();
+      L.DomEvent.on(
+        this._e_labelwrap,
+        "click",
+        function(_this) {
+          return function() {
+            _this._listVisible();
+          };
+        }(this)
+      );
+      // items
+      this._items = [];
+      var len = this._layers != null ? this._layers.length : 0;
+      for( var n = 0; n < len; n++ ) {
+        var lyr = this._layers[n];
+        var e_item = L.DomUtil.create("li", "bo-layercontrol-item");
+        e_item.appendChild(document.createTextNode(lyr.text));
+        L.DomEvent.on(
+          e_item,
+          "click",
+          function(_this, _id) {
+            return function() {
+              _this.activeLayerId(_id);
+            };
+          }(this, lyr.id)
+        );
+        this._e_list.appendChild(e_item);
+        this._items[n] =  e_item;
+      }
+      //
       for( var n = 0; n < this._layers.length; n++ ) {
         this._layers[n].layer.on("add remove", this._onLayerChange, this);
       }
@@ -39,6 +113,7 @@ BO.generateLayerControl = function(layers, options) {
         // sets default
         this.activeLayerId(this._layers[0].id);
       }
+      //
       return this._e_root;
     },
     /**
@@ -66,9 +141,6 @@ BO.generateLayerControl = function(layers, options) {
         "layer": layer,
         "text": text,
       });
-      if( this._map ) {
-        this._update();
-      }
       return this;
     },
     /**
@@ -86,9 +158,6 @@ BO.generateLayerControl = function(layers, options) {
           flag = true;
         }
       }
-      if( flag && this._map ) {
-        this._update();
-      }
       return this;
     },
     /**
@@ -99,12 +168,16 @@ BO.generateLayerControl = function(layers, options) {
     "activeLayerId": function(id) {
       if( arguments != null && arguments.length > 0 ) {
         var added = [], removed = [];
+        var text = null; // 2020-04-03 Added
         for(var n = 0; n < this._layers.length; n++ ) {
           if( id == this._layers[n].id ) {
             added.push(this._layers[n].layer);
+            text = this._layers[n].text; // 2020-04-03 Added
+            addClassName(this._items[n], "bo-layercontrol-hit");
           }
           else {
             removed.push(this._layers[n].layer);
+            removeClassName(this._items[n], "bo-layercontrol-hit");
           }
         }
         // stops onLayerChange handler
@@ -119,6 +192,8 @@ BO.generateLayerControl = function(layers, options) {
             this._map.addLayer(added[n]);
           }
         }
+        // 2020-04-03 Added
+        this._e_label.innerText = text != null ? text : "";
         // restarts onLayerChange handler
         this._Stop_onLayerChange = false;
         //
@@ -147,42 +222,15 @@ BO.generateLayerControl = function(layers, options) {
       if( type == "add") {
         // finds id
         var id = null;
+        var text = null;
         for (var n = 0; n < this._layers.length; n++) {
           if( e.target === this._layers[n].layer ) {
             id = this._layers[n].id;
+            text = this._layers[n].text;
           }
         }
-        // changes value
-        this._e_select.value = id;
+        this._e_label.innerText = text;
       }
-    },
-    /**
-     * Called when layer selection is changed.
-     */
-    "_onSelectChange": function() {
-      if( !this._Stop_onLayerChange ) {
-        var id = this._e_select.value;
-        if( id != null && id != this.activeLayerId() ) {
-          this.activeLayerId(id);
-        }
-      }
-      this._refocusOnMap();
-    },
-    /**
-     * Updates all of internal elements.
-     */
-    "_update": function() {
-      if( this._e_root && this._e_select ) {
-        L.DomUtil.empty(this._e_select);
-        for(var n = 0; n < this._layers.length; n++ ) {
-          var l = this._layers[n];
-          var e = L.DomUtil.create("option");
-          e.value = l.id;
-          e.appendChild(document.createTextNode(l.text));
-          this._e_select.appendChild(e);
-        }
-      }
-      return this;
     },
   });
   // Creates an instance.

@@ -36,9 +36,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Enable webview debug (via chrome://inspect)
-        // if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-        //     WebView.setWebContentsDebuggingEnabled(true);
-        // }
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            WebView.setWebContentsDebuggingEnabled(true)
+        }
         // Initialization
         mHandler = Handler()
         supportActionBar!!.hide()
@@ -214,7 +214,7 @@ class MainActivity : AppCompatActivity() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || ContextCompat.checkSelfPermission(this@MainActivity, permission) == PackageManager.PERMISSION_GRANTED ) {
             // SDK < 23 OR already granted, accepts without a prompt.
             geolocationCallback?.invoke(geolocationOrigin, true, true)
-            return;
+            return
         }
         if (!ActivityCompat.shouldShowRequestPermissionRationale(this@MainActivity, permission) ) {
             mGeolocationOrigin = geolocationOrigin

@@ -176,9 +176,10 @@ function initCommands(map, mapconsole, resources) {
     }
   );
   // 2020-03-30 Added: info window.
+  // 2020-04-03 Modified: "," after 2nd arg removed.
   var info = new BO.Info(
     document.getElementById("MAPINFO-ROOT"),
-    resources.get("dismiss"),
+    resources.get("dismiss")
   );
   mapconsole.addCommandButton(null, "info",
     function(e){

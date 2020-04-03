@@ -92,6 +92,21 @@ BO.MapConsole.prototype.onClick = function onClick(v) {
   this.opened(!this.opened());
 };
 
+BO.MapConsole._MakeSvgButton = function _MakeSvgButton(obj, e_root, icon_name, onclick) {
+  if( e_root == null ) {
+    e_root = document.createElement("div");
+  }
+  e_root.className = (e_root.className != null ? e_root.className: "") +"icon-wrap";
+  obj._e_root = e_root;
+  obj._e_svg = BO.createInlineSvg(BO.icons[icon_name],{"class": "icon"});
+/*
+  obj._e_svg.setAttribute("viewBox", "0 0 64 64");
+  obj._e_svg.setAttribute("class", "icon");
+*/
+  obj._e_root.appendChild(obj._e_svg);
+  obj._e_root.addEventListener("click", onclick);
+};
+
 /**
  * Command button
  * @param e_root DOM element. If null, creates a div element.
@@ -99,16 +114,7 @@ BO.MapConsole.prototype.onClick = function onClick(v) {
  * @param onclick A listener for onclick.
  */
 BO.MapConsoleCommandButton = function MapConsoleCommandButton(e_root, icon_name, onclick) {
-  if( e_root == null ) {
-    e_root = document.createElement("div");
-  }
-  e_root.className = (e_root.className != null ? e_root.className: "") +"icon-wrap";
-  this._e_root = e_root;
-  this._e_svg = BO.createInlineSvg(BO.icons[icon_name]);
-  this._e_svg.setAttribute("viewBox", "0 0 64 64");
-  this._e_svg.setAttribute("class", "icon");
-  this._e_root.appendChild(this._e_svg);
-  this._e_root.addEventListener("click", onclick);
+  BO.MapConsole._MakeSvgButton(this, e_root, icon_name, onclick);
 };
 
 /**
@@ -118,16 +124,7 @@ BO.MapConsoleCommandButton = function MapConsoleCommandButton(e_root, icon_name,
  * @param onchange A listener for onchange.
  */
 BO.MapConsoleToggleButton = function MapConsoleToggleButton(e_root, icon_name, onchange) {
-  if( e_root == null ) {
-    e_root = document.createElement("div");
-  }
-  e_root.className = (e_root.className != null ? e_root.className: "") +" icon-wrap";
-  this._e_root = e_root;
-  this._e_svg = BO.createInlineSvg(BO.icons[icon_name]);
-  this._e_svg.setAttribute("viewBox", "0 0 64 64");
-  this._e_svg.setAttribute("class", "icon");
-  this._e_root.appendChild(this._e_svg);
-  this._e_root.addEventListener("click", function(_this){return function(e){_this.onClick();};}(this));
+  BO.MapConsole._MakeSvgButton(this, e_root, icon_name, function(_this){return function(e){_this.onClick();};}(this));
   this._onchange = onchange;
   this.active(false);
 };
@@ -163,3 +160,29 @@ BO.MapConsoleToggleButton.prototype.active = function active(v) {
 BO.MapConsoleToggleButton.prototype.onClick = function onClick(e) {
   this.active(!this.active());
 }
+
+
+
+/**
+ * Select button
+ * @param e_root DOM element. If null, creates a div element.
+ * @param icon_name Icon name registered in BO.icons.
+ * @param onchange A listener for onchange.
+ */
+/*
+BO.MapConsoleSelectButton = function MapConsoleSelectButton(e_root, icon_names, onchange) {
+  if( e_root == null ) {
+    e_root = document.createElement("div");
+  }
+  e_root.className = (e_root.className != null ? e_root.className: "") +" icon-wrap";
+  this._e_root = e_root;
+  this._e_svg = BO.createInlineSvg(BO.icons[icon_name]);
+  this._e_svg.setAttribute("viewBox", "0 0 64 64");
+  this._e_svg.setAttribute("class", "icon");
+  this._e_root.appendChild(this._e_svg);
+  this._e_root.addEventListener("click", function(_this){return function(e){_this.onClick();};}(this));
+  this._onchange = onchange;
+  this.active(false);
+};
+*/
+

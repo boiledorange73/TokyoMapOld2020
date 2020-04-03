@@ -121,6 +121,19 @@ BO.icons = {
       "stroke-width": 0,
     },
   ],
-
+  "tup": [
+    {
+      "tagName": "path",
+      "d": "M 32 6 L 62 58 L 2 58 z",
+      "stroke-width": 0,
+    },
+  ],
+  "tdown": [
+    {
+      "tagName": "path",
+      "d": "M 32 58 L 62 6 L 2 6 z",
+      "stroke-width": 0,
+    },
+  ],
 };
 
