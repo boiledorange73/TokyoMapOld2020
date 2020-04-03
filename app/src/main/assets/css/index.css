@@ -157,6 +157,8 @@ HTML, body, #MAIN {
 }
 
 /* 2020-04-01 added: hover, active at icon */
+/* 2020-04-03 deleted */
+/*
 .icon-wrap:hover {
   background: #ffc;
 }
@@ -164,15 +166,10 @@ HTML, body, #MAIN {
 .icon-wrap:active {
   background: #fee;
 }
-
-
 .icon, icon-active, icon-inactive {
   margin: 0.25em;
 }
-
-
-
-
+*/
 
 .icon {
   stroke: #000;
