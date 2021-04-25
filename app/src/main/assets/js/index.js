@@ -4,7 +4,7 @@ if(window.BO == null ) {
 
 var EXTENT4326 =  [138.937186111, 34.8595027778, 140.880366667, 36.4654194444];
 
-var map;
+var mapapp;
 
 function setAndroidVersionCode(versioncode) {
   window.BO = window.BO || {};
@@ -18,19 +18,47 @@ function setAppNameVer(appName, appVer) {
   BO.appVer = appVer;
 }
 
+/* 2021-04-01 Added */
+/**
+ * Gets whether obj is instance of HTMLElement
+ * @param obj Tested object. 
+ * @returns Whether obj is instance of HTMLElement
+ */
+function isHTMLElement(obj) {
+  if( window.HTMLElement ) {
+    return obj instanceof HTMLElement;
+  }
+  return (typeof obj === "object") &&
+      (obj.nodeType === 1) &&
+      (typeof obj.style === "object") &&
+      (typeof obj.ownerDocument ==="object");
+}
 
+/**
+ * Called when ready to start.
+ */
 window.onload = function() {
+  /* 2021-04-01 Modified: ort-riku10,ort_USA10,ort_old10 added */
+  /* 2021-04-01 Modified: leaflet added */
   var resources = new BO.resources({
     "app_name": ["Tokyo Map Old", {"ja": "東京古い地図"}], // 2020-03-30 Added
     "rapid": ["Rapid Survey Map", {"ja": "迅速測図"}],
     "tokyo5000": ["Tokyo 1:5000", {"ja": "東京 1:5000"}],
+    "ort_riku10": ["AP 1936-1942", {"ja": "空撮 1936-1942"}],
+    "ort_USA10": ["AP 1945-1950", {"ja": "空撮 1945-1950"}],
+    "ort_old10": ["AP 1961-1969", {"ja": "空撮 1961-1969"}],
+    "gazo1": ["AP 1974-1978", {"ja": "空撮 1974-1978"}],
     "gsiort": ["Ortho", {"ja": "オルソ画像"}],
     "gsistd": ["Standard", {"ja": "標準地図"}],
     "gsitile": ["GSI Tile", {"ja": "地理院タイル"}],
     "naro": ["NARO", {"ja": "農研機構"}],
     "dismiss": ["Dismiss", {"ja": "閉じる"}],
     "locationerror": ["Error occurred while getting location.",{"ja": "位置情報取得時にエラーが発生しました。"}],
+    "leaflet": ["Leaflet"],
+    "leaflet_url": ["https://leafletjs.com/"],
   });
+
+  /* 2021-04-01 Modified: ort-riku10,ort_USA10,ort_old10 added */
   var layersettings = [
     {
       "id": "rapid",
@@ -72,121 +100,61 @@ window.onload = function() {
       "url": "https://cyberjapandata.gsi.go.jp/xyz/ort/{z}/{x}/{y}.jpg",
       "maxZoom": 18,
     },
+    {
+      "id": "ort_riku10",
+      "text": resources.get("ort_riku10"),
+      "attribution": {
+        "text": resources.get("gsitile"),
+        "site": "https://maps.gsi.go.jp/development/ichiran.html",
+      },
+      "url": "https://cyberjapandata.gsi.go.jp/xyz/ort_riku10/{z}/{x}/{y}.png",
+      "maxZoom": 18,
+    },
+    {
+      "id": "ort_USA10",
+      "text": resources.get("ort_USA10"),
+      "attribution": {
+        "text": resources.get("gsitile"),
+        "site": "https://maps.gsi.go.jp/development/ichiran.html",
+      },
+      "url": "https://cyberjapandata.gsi.go.jp/xyz/ort_USA10/{z}/{x}/{y}.png",
+      "maxZoom": 17,
+    },
+    {
+      "id": "ort_old10",
+      "text": resources.get("ort_old10"),
+      "attribution": {
+        "text": resources.get("gsitile"),
+        "site": "https://maps.gsi.go.jp/development/ichiran.html",
+      },
+      "url": "https://cyberjapandata.gsi.go.jp/xyz/ort_old10/{z}/{x}/{y}.png",
+      "maxZoom": 17,
+    },
+    {
+      "id": "gazo1",
+      "text": resources.get("gazo1"),
+      "attribution": {
+        "text": resources.get("gsitile"),
+        "site": "https://maps.gsi.go.jp/development/ichiran.html",
+      },
+      "url": "https://cyberjapandata.gsi.go.jp/xyz/gazo1/{z}/{x}/{y}.jpg",
+      "maxZoom": 17,
+    },
   ];
-  // main
-  var e_main = document.getElementById("MAIN");
-  map = new BO.ChiefMap(e_main, layersettings, "chief");
-  // console
-  var mapconsole = createMapConsole();
-  initCommands(map, mapconsole, resources);
-  // initilizes lon,lat,zoom
-  var lon = localStorage.getItem("lon");
-  var lat = localStorage.getItem("lat");
-  var zoom = localStorage.getItem("zoom");
-  if( lon !== null && lat !== null && zoom !== null ) {
-    map.setLonLatZoom(lon, lat, zoom);
-  }
-  else {
-    map.fit(EXTENT4326);
-  }
+  // 2021-04-01 Added: library info.
+  var libs = [
+    {
+      "text": resources.get("leaflet"),
+      "href": resources.get("leaflet_url"),
+    }
+  ];
+  /* 2021-04-01 Modified: initialization swept to BO.MapApp */
+  mapapp = new BO.MapApp("MAIN", {
+    "layersettings": layersettings,
+    "extent4326": EXTENT4326,
+    "resources": resources,
+    "submaps": 1,
+    "libs": libs,
+  });
 }
 
-function createMapConsole() {
-  var e_root = document.getElementById("MAPCONSOLE-ROOT");
-  var e_console = document.createElement("div");
-  e_console.id = "MAPCONSOLE";
-  e_root.appendChild(e_console);
-  var e_main = document.createElement("div");
-  e_main.id = "MAPCONSOLE-MAIN";
-  e_console.appendChild(e_main);
-  var e_button = document.createElement("div");
-  e_button.id = "MAPCONSOLE-BUTTON";
-  e_root.appendChild(e_button);
-  var ret = new BO.MapConsole(e_console, e_main, e_button);
-  return ret;
-}
-
-function initCommands(map, mapconsole, resources) {
-  var watch_id = null;
-  var latest_coords = null;
-  mapconsole.addCommandButton(null, "home",
-    function(e){
-      map.fit(EXTENT4326);
-    }
-  );
-  mapconsole.addCommandButton(null, "mylocation",
-    function(e){
-      if( latest_coords != null ) {
-        map.setLonLatZoom(latest_coords.longitude, latest_coords.latitude);
-      }
-      else {
-        navigator.geolocation.getCurrentPosition(
-          function success(pos) {
-            if( pos != null && pos.coords != null ) {
-              // latitude, longitude, altitude, accuracy, altitudeAccuracy, heading, speed
-              map.putLocationMarker(pos.coords, 5000, true);
-            }
-          },
-          function error(err) {
-            alert(resources.get("locationerror") + "\n" + err.message);
-            console.log(err);
-          },
-          {
-            "maximumAge": 0,
-            "timeout": 10000,
-            "enableHighAccuracy": true,
-          }
-        );
-      }
-    }
-  );
-  mapconsole.addToggleButton(null, "gnss",
-    function(e){
-      if( e ) {
-        latest_coords = null;
-        watch_id = navigator.geolocation.watchPosition(
-          function success(pos) {
-            if( pos != null && pos.coords != null ) {
-              map.putLocationMarker(pos.coords, 0, false);
-              latest_coords = {};
-              for(var k in pos.coords ) {
-                latest_coords[k] = pos.coords[k];
-              }
-            }
-          },
-          function error(err) {
-            alert(resources.get("locationerror") + "\n" + err.message);
-            mapconsole._buttonhash["gnss"].active(false);
-          },
-          {
-            "maximumAge": 0,
-            "timeout": 5000,
-            "enableHighAccuracy": true,
-          }
-        );
-      }
-      else {
-        if( watch_id !== null ) {
-          navigator.geolocation.clearWatch(watch_id);
-          map.setupLocationTimeout(0);
-          watch_id = null;
-          latest_coords = null;
-        }
-      }
-    }
-  );
-  // 2020-03-30 Added: info window.
-  // 2020-04-03 Modified: "," after 2nd arg removed.
-  var info = new BO.Info(
-    document.getElementById("MAPINFO-ROOT"),
-    resources.get("dismiss")
-  );
-  mapconsole.addCommandButton(null, "info",
-    function(e){
-      info.show({
-        "appname": BO.appName ? BO.appName : resources.get("app_name"),
-        "appver" : BO.appVer,
-      });
-    }
-  );
-}

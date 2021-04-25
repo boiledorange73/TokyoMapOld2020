@@ -135,5 +135,50 @@ BO.icons = {
       "stroke-width": 0,
     },
   ],
+  // 2021-04-01 Added
+  "singlemap": [
+    {
+      "tagName": "path",
+      "d": "M 2 2 62 2 62 62 2 62 z",
+      "stroke-width": 0,
+    },
+  ],
+  // 2021-04-01 Added
+  "dualmaph": [
+    {
+      "tagName": "path",
+      "d": "M 2 2 30 2 30 62 2 62 z",
+      "stroke-width": 0,
+    },
+    {
+      "tagName": "path",
+      "d": "M 34 2 63 2 63 62 34 62 z",
+      "stroke-width": 0,
+    },
+  ],
+  // 2021-04-05 Added
+  "dualmapv": [
+    {
+      "tagName": "path",
+      "d": "M 2 2,2 30,62 30,62 2 z M 2 34,2 63,62 63,62 34 z",
+      "stroke-width": 0,
+    },
+  ],
+  // 2021-04-01 Added
+  "cross": [
+    {
+      "tagName": "path",
+      "d": "M 28 2,36 2,36 28,62 28,62 36,36 36,36 62,28 62,28 36,2 36,2 28,28 28,28 2 z",
+      "stroke-width": 0,
+    },
+  ],
+  // 2021-04-04 Added
+  "crosshair": [
+    {
+      "tagName": "path",
+      "d": "M 32 2,30 4,30 26,32 28,34 26,34 4 z M 32 62,34 60,34 38,32 36,30 38,30 60,32 62 z M 2 32,4 30,26 30,28 32,26 34,4 34 z M 62 32,60 34,38 34,36 32,38 30,60 30,62 32 z",
+      "stroke-width": 1,
+    },
+  ],
 };
 

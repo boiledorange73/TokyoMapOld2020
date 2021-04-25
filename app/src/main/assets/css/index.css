@@ -8,22 +8,50 @@ HTML, body, #MAIN {
   height: 100%;
 }
 
-.bo-layercontrol {
+/* 2021-04-01 removed: bo-layercontrol */
+
+.leaflet-top {
   position: absolute;
-  top: 0.5em;
+  height: 100%;
+}
+
+.bo-map {
+  position: absolute;
+  left: 0;
+  top: 0;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 900;
+}
+
+.bo-layerswitcher-root {
+  position: absolute;
   right: 0.25em;
+  top: 0.25em;
+  margin: 0;
+  padding: 0;
+  max-width: 100%;
+  max-height: 95%; /* a little smaller */
+  z-index: 1000;
+  overflow: auto;
+}
+
+/* 2020-04-03 Added */
+/* 2020-04-01 Modified: position, left, top added */
+.bo-layercontrol-root {
+  position: relative;
+  left: 0;
+  top: 0;
+  margin: 0;
+  padding: 0;
+  font-size: 0.5cm;
 }
 
 .bo-layercontrol-select > select {
   padding: 0.25em;
   font-size: 1.25em;
-}
-
-/* 2020-04-03 Added */
-.bo-layercontrol-root {
-  margin: 0;
-  padding: 0;
-  font-size: 0.5cm;
 }
 
 .bo-layercontrol-list {
@@ -59,7 +87,70 @@ HTML, body, #MAIN {
   height: 0.5em;
 }
 
+/* 2021-04-01 Added */
+.bo-centercross {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
 
+/* 2021-04-01 Added: Zoom control must be upper than layer selector. */
+.leaflet-left {
+  z-index: 1200;
+}
+.leaflet-right {
+  z-index: 900;
+}
+
+/* MAP */
+/* 2021-04-01 Added. */
+/* single */
+#CHIEFMAP {
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+}
+
+/* 2021-04-01 Added. */
+#SUBMAP {
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  right: 0;
+  bottom: 0;
+  display: none;
+}
+
+/* 2021-04-01 Added: dualmap */
+.bo-map-dualmaph #CHIEFMAP {
+  width: 50%;
+  display: block;
+}
+
+.bo-map-dualmaph #SUBMAP {
+  width: 50%;
+  display: block;
+}
+
+.bo-map-dualmapv #CHIEFMAP {
+  height: 50%;
+  display: block;
+}
+
+.bo-map-dualmapv #SUBMAP {
+  height: 50%;
+  display: block;
+}
+
+/* MAPCONSOLE */
 #MAPCONSOLE-ROOT {
   z-index: 1000; /* leaflet set by 200 */
   position: absolute;
@@ -71,6 +162,7 @@ HTML, body, #MAIN {
   max-height: 90%;
 }
 
+/* 2021-04-01 Modified: overflow from #MAPINFO */
 #MAPINFO-ROOT {
   z-index: 1000; /* leaflet set by 200 */
   position: absolute;
@@ -80,16 +172,17 @@ HTML, body, #MAIN {
   margin: auto;
   max-width: 90%;
   max-height: 70%;
+  overflow: auto;
   display: none;
 }
 
+/* 2021-04-01 Modifird: overflow to #MAPINFO-ROOT */
 #MAPINFO {
   margin: auto;
   padding: 1em;
   background: #fff;
   border: solid 1px #999;
   border-radius: 1em;
-  overflow: auto;
   text-align: center;
 }
 
@@ -147,29 +240,21 @@ HTML, body, #MAIN {
   text-align: center;
 }
 
-/* 2020-04-01 changed: margin added */
-.icon-wrap {
+/* 2020-04-01 Modified: margin added */
+/* 2021-04-01 Modified: .icon-wrap-active selector added */
+/* 2021-04-01 Modified: border added */
+.icon-wrap, .icon-wrap-active {
   width: 2em;
   height: 2em;
   padding: 0.25em;
   display: inline-block;
   margin: 0.25em;
+  border: solid 1px rgba(255,255,255,0);
 }
 
-/* 2020-04-01 added: hover, active at icon */
-/* 2020-04-03 deleted */
-/*
-.icon-wrap:hover {
-  background: #ffc;
+.icon-wrap-active {
+  border: solid 1px #f00;
 }
-
-.icon-wrap:active {
-  background: #fee;
-}
-.icon, icon-active, icon-inactive {
-  margin: 0.25em;
-}
-*/
 
 .icon {
   stroke: #000;
@@ -185,3 +270,16 @@ HTML, body, #MAIN {
   stroke: #333;
   fill: #333;
 }
+
+/* 2021-04-01 Added for center crosshair */
+.bo-icon-centercross {
+  background: transparent;
+  cursor: grab; /* for leaflet */
+}
+
+.bo-icon-centercross svg {
+  fill: rgba(255,0,0,0.5);
+  stroke: rgba(255,0,0,1);
+  stroke-width: 2px;
+}
+

@@ -2,9 +2,11 @@ if( window.BO == null ) {
   window.BO = {};
 }
 
+// 2020-03-30 Added.
 /**
  * Info window class.
- * 2020-03-30 Added.
+ * @param e_root Root element.
+ * @param t_dismiss Text of dismiss button.
  */
 BO.Info = function Info (e_root, t_dismiss) {
   this._e_root = e_root;
@@ -17,6 +19,10 @@ BO.Info = function Info (e_root, t_dismiss) {
   this._e_appver = document.createElement("h2");
   this._e_appver.id = "MAPINFO-APPVER";
   this._e_main.appendChild(this._e_appver);
+  //2021-04-01 Added: library info.
+  this._e_lib = document.createElement("div");
+  this._e_lib.id = "MAPINFO-LIB";
+  this._e_main.appendChild(this._e_lib);
   this._e_content = document.createElement("div");
   this._e_content.id = "MAPINFO-CONTENT";
   this._e_main.appendChild(this._e_content);
@@ -29,6 +35,7 @@ BO.Info = function Info (e_root, t_dismiss) {
     }
   }(this);
   this._e_main.appendChild(this._e_dismiss);
+  this._onhide = null;
   this.hide();
 };
 
@@ -40,7 +47,50 @@ BO.Info.prototype.show = function show(opts) {
   this._e_root.style.display = "block";
   this._e_appname.innerText = opts.appname ? opts.appname : "";
   this._e_appver.innerText = opts.appver ? opts.appver : "";
+  //2021-04-01 Added: library info.
+  this.setLibs(opts.libs);
   this._e_content.innerHTML = opts.content ? opts.content : "";
+  return this;
+};
+
+// 2021-04-01 Added.
+/**
+ * Puts text and href of a library.
+ */
+BO.Info.prototype.setLibs = function setLibs(list) {
+  while( this._e_lib.lastChild ) {
+    this._e_lib.removeChild(this._e_lib.lastChild);
+  }
+  var len = list ? list.length : 0;
+  for( var n = 0; n < len; n++ ) {
+    var hash = list[n];
+    if( hash.text ) {
+      var e = document.createTextNode(hash.text);
+      if( hash.href ) {
+        var a = document.createElement("a");
+        a.href = hash.href;
+        a.target = "_blank";
+        a.appendChild(e);
+        this._e_lib.appendChild(a);
+      }
+      else {
+        this._e_lib.appendChild(e);
+      }
+    }
+  }
+  return this;
+};
+
+// 2021-04-01 Added.
+/**
+ * Sets/Gets innerHTML of content element.
+ */
+BO.Info.prototype.innerHTML = function innerHTML(value) {
+  if( arguments == null || !(arguments.length > 0) ) {
+    return this._e_content.innerHTML;
+  }
+  this._e_content.innerHTML = value;
+  return this;
 };
 
 /**
@@ -48,5 +98,30 @@ BO.Info.prototype.show = function show(opts) {
  */
 BO.Info.prototype.hide = function hide() {
   this._e_root.style.display = "none";
+  // 2021-04-01 Added: onHide handler.
+  if( this._onhide ) {
+    this._onhide(this);
+  }
+  return this;
 };
 
+// 2021-04-01 Added.
+/**
+ * Gets whether this is hidden.
+ * @return Whether this is hidden.
+ */
+BO.Info.prototype.isVisible = function isVisible() {
+  return this._e_root.style.display == "block";
+};
+
+// 2021-04-01 Added: onHide handler.
+/**
+ * Gets/Sets onHide event handler.
+ */
+BO.Info.prototype.onHide = function onHide(value) {
+  if( arguments == null || !(arguments.length > 0) ) {
+    return this._onhide;
+  }
+  this._onhide = value;
+  return this;
+};
