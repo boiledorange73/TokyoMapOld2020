@@ -2,6 +2,12 @@ Tokyo Map Old 2020
 
 Upgraded version of "Tokyo Map Old".
 
+You can get the app for Android at:
+  https://play.google.com/store/apps/details?id=com.gmail.boiledorange73.app.tokyomapold2020
+
+Or on your browser, visit:
+  https://boiledorange73.github.io/TokyoMapOld2020/app/src/main/assets/index.html
+
 Release Note
 
 0.9.3 - 25th April, 2021
