@@ -13,9 +13,12 @@ BO.Info = function Info (e_root, t_dismiss) {
   this._e_main = document.createElement("div");
   this._e_main.id = "MAPINFO";
   this._e_root.appendChild(this._e_main);
-  this._e_appname = document.createElement("h1");
-  this._e_appname.id = "MAPINFO-APPNAME";
-  this._e_main.appendChild(this._e_appname);
+  this._e_head = document.createElement("h1");
+  this._e_head.id = "MAPINFO-APPNAME";
+  this._e_appname = document.createElement("a");
+  this._e_appname.id = "MAPINFO-SITENAME";
+  this._e_head.appendChild(this._e_appname);
+  this._e_main.appendChild(this._e_head);
   this._e_appver = document.createElement("h2");
   this._e_appver.id = "MAPINFO-APPVER";
   this._e_main.appendChild(this._e_appver);
@@ -46,8 +49,17 @@ BO.Info.prototype.show = function show(opts) {
   opts = opts || {};
   this._e_root.style.display = "block";
   this._e_appname.innerText = opts.appname ? opts.appname : "";
+  /* 2021-08-05 Added: supports siteurl. */
+  if( opts.siteurl ) {
+    this._e_appname.href = opts.siteurl;
+    this._e_appname.target =  "_blank";
+  }
+  else {
+    this._e_appname.href = this._e_appname.target = "";
+  }
+
   this._e_appver.innerText = opts.appver ? opts.appver : "";
-  //2021-04-01 Added: library info.
+  // 2021-04-01 Added: library info.
   this.setLibs(opts.libs);
   this._e_content.innerHTML = opts.content ? opts.content : "";
   return this;

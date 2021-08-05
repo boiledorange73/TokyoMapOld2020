@@ -27,6 +27,7 @@ BO.MapApp = function MapApp(e_main, opts) {
   opts = opts ? opts : {};
   this._layersettings = opts.layersettings ? opts.layersettings : [];
   this._libs = opts.libs ? opts.libs : [];
+  this._siteurl = opts.siteurl;
   // get main element
   if( isHTMLElement(e_main) ) {
     this._e_main = e_main;
@@ -161,6 +162,7 @@ BO.MapApp.prototype.showInfo = function showInfo() {
     "appname": BO.appName ? BO.appName : this._resources.get("app_name"),
     "appver" : BO.appVer,
     "libs": this._libs,
+    "siteurl": this._siteurl, /* 2021-08-05 Added */
   });
   this._info.innerHTML(infocontent_html);
 };

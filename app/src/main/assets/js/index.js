@@ -42,6 +42,7 @@ window.onload = function() {
   /* 2021-04-01 Modified: leaflet added */
   var resources = new BO.resources({
     "app_name": ["Tokyo Map Old", {"ja": "東京古い地図"}], // 2020-03-30 Added
+    "siteurl": ["https://github.com/boiledorange73/TokyoMapOld2020/",], // 2020-08-05 Added
     "rapid": ["Rapid Survey Map", {"ja": "迅速測図"}],
     "tokyo5000": ["Tokyo 1:5000", {"ja": "東京 1:5000"}],
     "ort_riku10": ["AP 1936-1942", {"ja": "空撮 1936-1942"}],
@@ -164,6 +165,7 @@ window.onload = function() {
     "resources": resources,
     "submaps": 1,
     "libs": libs,
+    "siteurl": resources.get("siteurl")
   });
 }
 
