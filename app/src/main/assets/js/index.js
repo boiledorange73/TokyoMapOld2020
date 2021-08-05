@@ -59,6 +59,7 @@ window.onload = function() {
   });
 
   /* 2021-04-01 Modified: ort-riku10,ort_USA10,ort_old10 added */
+  /* 2021-08-05 Modified: maxNativeZoom added */
   var layersettings = [
     {
       "id": "rapid",
@@ -68,7 +69,8 @@ window.onload = function() {
         "site": "https://aginfo.cgk.affrc.go.jp/mapprv/",
       },
       "url": "http://aginfo.cgk.affrc.go.jp/ws/tmc/1.0.0/Kanto_Rapid-900913-L/{z}/{x}/{y}.jpg",
-      "maxZoom": 17,
+      "maxNativeZoom": 17,
+      "maxZoom": 20
     },
     {
       "id": "tokyo5000",
@@ -78,7 +80,8 @@ window.onload = function() {
         "site": "https://aginfo.cgk.affrc.go.jp/mapprv/",
       },
       "url": "http://aginfo.cgk.affrc.go.jp/ws/tmc/1.0.0/Tokyo5000-900913-L/{z}/{x}/{y}.jpg",
-      "maxZoom": 18,
+      "maxNativeZoom": 18,
+      "maxZoom": 20
     },
     {
       "id": "gsistd",
@@ -88,7 +91,8 @@ window.onload = function() {
         "site": "https://maps.gsi.go.jp/development/ichiran.html",
       },
       "url": "https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png",
-      "maxZoom": 18,
+      "maxNativeZoom": 18,
+      "maxZoom": 20
     },
     {
       "id": "gsiort",
@@ -98,7 +102,8 @@ window.onload = function() {
         "site": "https://maps.gsi.go.jp/development/ichiran.html",
       },
       "url": "https://cyberjapandata.gsi.go.jp/xyz/ort/{z}/{x}/{y}.jpg",
-      "maxZoom": 18,
+      "maxNativeZoom": 18,
+      "maxZoom": 20
     },
     {
       "id": "ort_riku10",
@@ -108,7 +113,8 @@ window.onload = function() {
         "site": "https://maps.gsi.go.jp/development/ichiran.html",
       },
       "url": "https://cyberjapandata.gsi.go.jp/xyz/ort_riku10/{z}/{x}/{y}.png",
-      "maxZoom": 18,
+      "maxNativeZoom": 18,
+      "maxZoom": 20
     },
     {
       "id": "ort_USA10",
@@ -118,7 +124,8 @@ window.onload = function() {
         "site": "https://maps.gsi.go.jp/development/ichiran.html",
       },
       "url": "https://cyberjapandata.gsi.go.jp/xyz/ort_USA10/{z}/{x}/{y}.png",
-      "maxZoom": 17,
+      "maxNativeZoom": 17,
+      "maxZoom": 20
     },
     {
       "id": "ort_old10",
@@ -128,7 +135,8 @@ window.onload = function() {
         "site": "https://maps.gsi.go.jp/development/ichiran.html",
       },
       "url": "https://cyberjapandata.gsi.go.jp/xyz/ort_old10/{z}/{x}/{y}.png",
-      "maxZoom": 17,
+      "maxNativeZoom": 17,
+      "maxZoom": 20
     },
     {
       "id": "gazo1",
@@ -138,7 +146,8 @@ window.onload = function() {
         "site": "https://maps.gsi.go.jp/development/ichiran.html",
       },
       "url": "https://cyberjapandata.gsi.go.jp/xyz/gazo1/{z}/{x}/{y}.jpg",
-      "maxZoom": 17,
+      "maxNativeZoom": 17,
+      "maxZoom": 20
     },
   ];
   // 2021-04-01 Added: library info.

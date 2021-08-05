@@ -90,12 +90,16 @@ BO.Map.createLayer = function createLayer(ls) {
       lopts.attribution = "<a target=\"_blank\" href=\""+ls.attribution.site+"\">"+lopts.attribution+"</a>";
     }
   }
-  // maxZoom, minZoom
+  // maxZoom, minZoom, maxNativeZoom
   if( ls.maxZoom !== null && typeof ls.maxZoom !== "undefined" ) {
     lopts.maxZoom = ls.maxZoom;
   }
   if( ls.minZoom !== null && typeof ls.minZoom !== "undefined" ) {
     lopts.minZoom = ls.minZoom;
+  }
+  /* 2021-08-05 Added: supports maxNativeZoom */
+  if( ls.maxNativeZoom !== null && typeof ls.maxNativeZoom !== "undefined" ) {
+    lopts.maxNativeZoom = ls.maxNativeZoom;
   }
   if( ls.id !== null && typeof ls.id !== "undefined" ) {
     lopts.id = ls.id;
