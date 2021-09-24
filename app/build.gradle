@@ -4,14 +4,14 @@ apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 29
-    buildToolsVersion "29.0.3"
+    buildToolsVersion "30.0.2"
 
     defaultConfig {
         applicationId "com.gmail.boiledorange73.app.tokyomapold2020"
         minSdkVersion 19
         targetSdkVersion 29
-        versionCode 8
-        versionName "0.9.3"
+        versionCode 9
+        versionName "0.9.4"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

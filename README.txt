@@ -9,6 +9,8 @@ Or on your browser, visit:
   https://boiledorange73.github.io/TokyoMapOld2020/app/src/main/assets/index.html
 
 Release Note
+0.9.4 - 24th September, 2021
+  Supports more magnification (zoom level 20 for all maps)
 
 0.9.3 - 25th April, 2021
   Supports double maps, crosshair.
