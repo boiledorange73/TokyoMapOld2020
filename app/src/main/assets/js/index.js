@@ -59,17 +59,18 @@ window.onload = function() {
     "leaflet_url": ["https://leafletjs.com/"],
   });
 
-  /* 2021-04-01 Modified: ort-riku10,ort_USA10,ort_old10 added */
-  /* 2021-08-05 Modified: maxNativeZoom added */
+  // 2021-04-01 Modified: ort-riku10,ort_USA10,ort_old10 added
+  // 2021-08-05 Modified: maxNativeZoom added
+  // 2022-04-13 Modified: URL changed.
   var layersettings = [
     {
       "id": "rapid",
       "text": resources.get("rapid"),
       "attribution": {
         "text": resources.get("naro"),
-        "site": "https://aginfo.cgk.affrc.go.jp/mapprv/",
+        "site": "https://habs.rad.naro.go.jp/",
       },
-      "url": "http://aginfo.cgk.affrc.go.jp/ws/tmc/1.0.0/Kanto_Rapid-900913-L/{z}/{x}/{y}.jpg",
+      "url": "https://boiledorange73.sakura.ne.jp/ws/tile/Kanto_Rapid-900913/{z}/{x}/{y}.jpg",
       "maxNativeZoom": 17,
       "maxZoom": 20
     },
@@ -78,9 +79,9 @@ window.onload = function() {
       "text": resources.get("tokyo5000"),
       "attribution": {
         "text": resources.get("naro"),
-        "site": "https://aginfo.cgk.affrc.go.jp/mapprv/",
+        "site": "https://habs.rad.naro.go.jp/",
       },
-      "url": "http://aginfo.cgk.affrc.go.jp/ws/tmc/1.0.0/Tokyo5000-900913-L/{z}/{x}/{y}.jpg",
+      "url": "https://boiledorange73.sakura.ne.jp/ws/tile/Tokyo5000-900913/{z}/{x}/{y}.jpg",
       "maxNativeZoom": 18,
       "maxZoom": 20
     },
@@ -158,7 +159,7 @@ window.onload = function() {
       "href": resources.get("leaflet_url"),
     }
   ];
-  /* 2021-04-01 Modified: initialization swept to BO.MapApp */
+  // 2021-04-01 Modified: initialization swept to BO.MapApp
   mapapp = new BO.MapApp("MAIN", {
     "layersettings": layersettings,
     "extent4326": EXTENT4326,
