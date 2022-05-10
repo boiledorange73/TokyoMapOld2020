@@ -294,3 +294,27 @@ BO.MapApp.prototype.chiefmap_OnMoveEnd = function chiefmap_OnMoveEnd() {
   localStorage.setItem("zoom", zoom);
   return this;
 }
+
+// 2022-05-10 Added.
+/**
+ * Writes the application name to all title elements.
+ */
+BO.MapApp.prototype.putAppNameToTitle = function putAppNameToTitle() {
+  var appname = BO.appName ? BO.appName : this._resources.get("app_name");
+  if( !appname ) {
+      return;
+  }
+  var titles = document.getElementsByTagName("title");
+  var len = titles ? titles.length : 0;
+  for( var n = 0; n < len; n++ ) {
+      var title = titles[n];
+      if( title ) {
+          // clears all
+          while( title.lastChild ){
+              title.removeChild(title.lastChild);
+          }
+          title.appendChild(document.createTextNode(appname));
+      }
+  }
+}
+
