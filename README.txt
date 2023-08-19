@@ -1,7 +1,8 @@
 Tokyo Map Old 2020
 
 Build Note
-  If you faces "SDK location not found." error, just try "Sync project with gradle files" once.
+  If you faces "SDK location not found." error,
+  just try "Sync project with gradle files" (Ctrl+Shift+o) once.
 
 You can get the app for Android at:
   https://play.google.com/store/apps/details?id=com.gmail.boiledorange73.app.tokyomapold2020
