@@ -11,6 +11,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.view.ViewGroup
 import android.webkit.*
 import android.widget.RelativeLayout
@@ -27,7 +28,6 @@ class MainActivity : AppCompatActivity() {
     // member variables
     private var mGeolocationOrigin: String? = null
     private var mGeolocationCallback: GeolocationPermissions.Callback? = null
-    private var mHandler: Handler? = null
     private var mWebView: WebView? = null
 
     /**
@@ -42,8 +42,7 @@ class MainActivity : AppCompatActivity() {
         }
         */
         // Initialization
-        mHandler = Handler()
-        supportActionBar!!.hide()
+        supportActionBar?.hide()
         //
         val layoutRoot = RelativeLayout(this)
         // appends views
@@ -104,9 +103,7 @@ class MainActivity : AppCompatActivity() {
                     // SDK < 23 OR already granted, accepts without a prompt.
                     callback.invoke(origin, true, true)
                 } else {
-                    mHandler.run {
-                        this@MainActivity.permissionCheck(origin, callback)
-                    }
+                    startPermissonCheck(origin, callback)
                 }
             }
         }
@@ -164,13 +161,17 @@ class MainActivity : AppCompatActivity() {
         }
         // 2020-03-30: Added.
         // Checks and requests permission.
-        mHandler.run {
-            permissionCheck(null, null)
-        }
+        startPermissonCheck(null, null)
         // starts the map application
         webview.loadUrl("file:///android_asset/index.html")
     }
 
+    fun startPermissonCheck(origin: String?, callback: GeolocationPermissions.Callback?) {
+        val handler :Handler = Handler(Looper.getMainLooper())
+        handler.run {
+            permissionCheck(origin, callback)
+        }
+    }
     fun getAppVerEnc(): String? {
         var v:String? = null
         try {
