@@ -11,8 +11,8 @@ android {
         applicationId = "com.gmail.boiledorange73.app.tokyomapold2020"
         minSdk = 19
         targetSdk = 34
-        versionCode = 11
-        versionName = "0.9.6"
+        versionCode = 12
+        versionName = "0.9.7"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

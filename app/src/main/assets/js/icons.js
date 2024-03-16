@@ -4,6 +4,9 @@ if( window.BO == null ) {
 
 /**
  * Icons
+ * Tags, each tag has a tag name and several attributes.
+ * Acutually "svg" tag needs xmlns="http://www.w3.org/2000/svg",
+ *   but this array does not have it.
  */
 BO.icons = {
   "mylocation": [
@@ -161,6 +164,14 @@ BO.icons = {
     {
       "tagName": "path",
       "d": "M 2 2,2 30,62 30,62 2 z M 2 34,2 63,62 63,62 34 z",
+      "stroke-width": 0,
+    },
+  ],
+  // 2024-02-22 Added
+  "dualmapin": [
+    {
+      "tagName": "path",
+      "d": "M 2 2,62 2, 62 62,2 62,2 2, 12 12,12 52,52 52,52 12,12 12 z M 16 16,48 16,48 48,16 48,16 16 z",
       "stroke-width": 0,
     },
   ],

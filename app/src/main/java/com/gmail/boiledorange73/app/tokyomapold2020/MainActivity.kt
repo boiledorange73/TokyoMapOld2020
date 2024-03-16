@@ -117,9 +117,9 @@ class MainActivity : AppCompatActivity() {
                     request: WebResourceRequest?
             ): Boolean {
                 if( request != null ) {
-                    if( request.method.toUpperCase(Locale.ROOT) == "GET" ) {
+                    if( request.method.uppercase(Locale.ROOT) == "GET" ) {
                         val url = request.url
-                        when( url.scheme?.toUpperCase(Locale.ROOT) ) {
+                        when( url.scheme?.uppercase(Locale.ROOT) ) {
                             "HTTP", "HTTPS" -> {
                                 if( startExternalBrowse(url.toString()) ) {
                                     return true

@@ -160,6 +160,51 @@ body {
   display: block;
 }
 
+.bo-map-dualmapin #SUBMAP {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.bo-map-dualmapin #CHIEFMAP {
+  display: block;
+  left: 1em;
+  right: 1em;
+  top: 3.5em;
+  bottom: 3.5em;
+  width: auto;
+  height: auto;
+/*
+  width: 90%;
+  height: 90%;
+  display: block;
+  left: 5%;
+  top: 5%;
+  right: 5%;
+  bottom: 5%;
+*/
+}
+
+.bo-map-dualmapin #SUBMAP .leaflet-control-zoom {
+  display: none;
+}
+
+.bo-map-dualmapin #SUBMAP .bo-map {
+  z-index: 890; /* under #CHIEFMAP .bo-map */
+}
+
+.bo-map-dualmapin #SUBMAP .bo-layerswitcher-root {
+  z-index: 1010; /* above #CHIEFMAP .bo-layerswitcher-root */
+}
+
+
+/*
+.bo-map-dualmapin #SUBMAP .leaflet-map-pane {
+  pointer-events: none;
+}
+*/
+
+
 /* MAPCONSOLE */
 #MAPCONSOLE-ROOT {
   z-index: 1000; /* leaflet set by 200 */
@@ -291,5 +336,25 @@ body {
   fill: rgba(255,0,0,0.5);
   stroke: rgba(255,0,0,1);
   stroke-width: 2px;
+}
+
+/* 2024-03-09 Added for labelswitcher */
+/* If "display:none", label.width is shurinked. If "visibility:hidden", label.width is not. */
+.bo-layercontrol-closed .bo-layercontrol-list {
+  visibility: hidden;
+  height: 0; /* list.height must be shurinked. */
+}
+
+.bo-map-dualmapin #SUBMAP .bo-layercontrol-closed .bo-layercontrol-label {
+  display: none;
+}
+
+.bo-map-dualmapin #SUBMAP .bo-layercontrol-closed .bo-layercontrol-list {
+  width: 0; /* list.width must be shurinked. */
+}
+
+/* labelswitch.position is absolute -> if label is not displayed, layercontrol is shrinked. */
+.bo-layercontrol-labelwrap {
+  height: 1.5em;
 }
 

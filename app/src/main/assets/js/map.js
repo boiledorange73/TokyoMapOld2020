@@ -2,6 +2,52 @@ if( window.BO == null ) {
   window.BO = {};
 }
 
+BO.Object = function Object() {
+  this._on = {};
+};
+
+BO.Object.prototype.on = function on(type, fn) {
+  if( !this._on[type] ) {
+    this._on[type] = [];
+  }
+  this._on[type].push(fn);
+  return this;
+};
+
+BO.Object.prototype.off = function on(type, fn) {
+  if( !fn ) {
+    /* removes all */
+    if( this._on[type] ) {
+      delete this._on[type];
+    }
+  }
+  else {
+    /* removes specified */
+    if( this._on[type] ) {
+      for( var n = this._on[type].length - 1; n >= 0; n-- ) {
+        if( this._on[type][n] == fn ) {
+          this._on[type].splice(n, 1);
+        }
+      }
+    }
+  }
+  this._on[ev].push(fn);
+  return this;
+};
+
+BO.Object.prototype.fire = function on(type, ev) {
+  var ary = this._on[type];
+  if( ary ) {
+    var len = ary.length;
+    for( var n = 0; n < len; n++ ) {
+      var fn = ary[n];
+      fn(ev);
+    }
+  }
+  return this;
+};
+
+
 /**
  * Map constructor.
  * @param ls Array of layer settings. [{id,text,attribution,url,maxZoom},...]
@@ -9,6 +55,8 @@ if( window.BO == null ) {
  * @param opts Options
  */
 BO.Map = function Map(target, ls, prefix, opts) {
+  BO.Object.call(this);
+
   if( target == null ) {
     return;
   }
@@ -47,6 +95,19 @@ BO.Map = function Map(target, ls, prefix, opts) {
     BO.Map.createLayerControlLayers(ls, this._layers),
     {"map": this._lmap}
   );
+  // 2024-03-09 Added: opacity control
+  var fn_opacity_changed = function(_this) {
+    return function opacity_changed(ev) {
+      _this.fire("opacity_changed", ev);
+    }
+  }(this);
+  this._opacity_control = BO.Control.opacity({
+    "position": "bottomright",
+    "listener":fn_opacity_changed
+  });
+  this._opacity_control.addTo(this._lmap);
+  
+  
   // baselayer
   this._lmap.on("baselayerchange", function(_this){return function(e) {_this.onChangeMap(e);};}(this));
   // 2021-04-01 Modified: handler
@@ -75,6 +136,9 @@ BO.Map = function Map(target, ls, prefix, opts) {
   this._children = [];
   this._starting = null;
 };
+
+BO.Map.prototype = new BO.Object();
+
 
 /**
  * Creates L.Layer instrnce.
@@ -169,6 +233,14 @@ BO.Map.prototype.centerCrossVisible = function centerCrossVisible(value) {
   }
 };
 
+// 2024-03-09 Added: opacity
+BO.Map.prototype.opacity = function opacity(value) {
+  if( arguments && arguments.length >= 1 ) {
+    this._opacity_control.opacity(parseInt(value));
+  }
+  return this._opacity_control.opacity();
+};
+
 /**
  * Gets/Sets ID of the active layer.
  */
@@ -190,7 +262,12 @@ BO.Map.prototype.activeLayerId = function(id) {
  * @return this.
  */
 BO.Map.prototype.setLonLatZoom = function setLonLatZoom(lon, lat, zoom) {
-  this._lmap.setView([lat, lon], zoom,{"animate": false});
+  if( !this._locked ) {
+    this._lmap.setView([lat, lon], zoom,{"animate": false});
+  }
+  else {
+    this._lastpos = {"lon": lon, "lat": lat, "zoom": zoom};
+  }
   return this;
 };
 
@@ -221,6 +298,35 @@ BO.Map.prototype.copyLocationFrom = function copyLocationFrom(src) {
   this.setLonLatZoom(lon, lat, zoom, true);
   return this;
 };
+
+// 2024-02-22 Added
+/**
+ * Gets/Sets whether this map (longitude, latitude and zoom) is locked.
+ */
+BO.Map.prototype.locked = function locked(value) {
+  if( arguments && arguments.length >= 1 ) {
+    // setter
+    // updates value and oldvalue
+    value = !!value;
+    var oldvalue = !!this._locked;
+    if( value != oldvalue ) {
+      // changes
+      this._locked = value;
+      // moveto if unlocked
+      if( !this._locked ) {
+        var lastpos = this._lastpos;
+        this._lastpos = null;
+        if( lastpos ) {
+          this.setLonLatZoom(lastpos["lon"], lastpos["lat"], lastpos["zoom"]);
+        }
+      }
+    }
+    return this;
+  }
+  // getter
+  return !!this._locked;
+};
+
 
 // --------------------------------
 // Move event handler

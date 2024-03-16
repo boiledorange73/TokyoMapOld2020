@@ -39,8 +39,6 @@ BO.MapApp = function MapApp(e_main, opts) {
   this._resources = opts.resources;
   this._submaps = opts.submaps >= 1 ? 1 : 0;
   //
-  // main
-  this._e_main.className = "bo-map-singlemap";
   // chief map
   this._e_chiefmap = document.createElement("div");
   this._e_chiefmap.id = "CHIEFMAP";
@@ -48,6 +46,10 @@ BO.MapApp = function MapApp(e_main, opts) {
   this._chiefmap = new BO.ChiefMap(this._e_chiefmap, this._layersettings);
   // chiefmap.moveend
   this._chiefmap._lmap.on("moveend", function(_this){return function(e){_this.chiefmap_OnMoveEnd();};}(this));
+  // 2024-03-09 Added: opacity
+  this._chiefmap.on("opacity_changed", function(ev) {
+    localStorage.setItem("chiefmap_opacity", ev.opacity);
+  });
   // 2021-04-01 Added: Submap
   // submap
   if( this._submaps >= 1 ) {
@@ -56,6 +58,10 @@ BO.MapApp = function MapApp(e_main, opts) {
     this._e_main.appendChild(e_submap);
     this._submap = new BO.Map(e_submap, this._layersettings, "sub");
     this._chiefmap.addChild(this._submap);
+    // 2024-03-09 Added: opacity
+    this._submap.on("opacity_changed", function(ev) {
+      localStorage.setItem("submap_opacity", ev.opacity);
+    });
   }
   // console
   this._mapconsole = BO.MapApp.createMapConsole();
@@ -71,6 +77,16 @@ BO.MapApp = function MapApp(e_main, opts) {
     if( this._extent4326 ) {
       this._chiefmap.fit(this._extent4326);
     }
+  }
+  // main
+  // 2024-03-09 Added: opacity initialization
+  var chiefmap_opacity = localStorage.getItem("chiefmap_opacity");
+  if( chiefmap_opacity !== null ) {
+    this._chiefmap.opacity(chiefmap_opacity);
+  }
+  var submap_opacity = localStorage.getItem("submap_opacity");
+  if( this._submap && submap_opacity !== null ) {
+    this._submap.opacity(submap_opacity);
   }
 };
 
@@ -167,6 +183,47 @@ BO.MapApp.prototype.showInfo = function showInfo() {
   this._info.innerHTML(infocontent_html);
 };
 
+BO.MapApp._DUALMAP_TYPES = ["singlemap","dualmaph", "dualmapv", "dualmapin"];
+BO.MapApp._DUALMAP_OPACITY_TYPES = [false, false, false, true];
+
+/**
+ * Gets/Sets dual map mode. Value is 0:singlemap, 1:horizontal 2:vertical
+ */
+// 2024-02-22 Added
+BO.MapApp.prototype.dualMap = function dualMap(value) {
+  if( arguments && arguments.length >= 1 ) {
+    // setter
+    this._dualmap = value;
+    localStorage.setItem("dualmap", value);
+    // changes styles
+    this._e_main.className = "bo-map-"+(BO.MapApp._DUALMAP_TYPES[value]);
+    // changes submap.locked
+    if( this._submap ) {
+      // changes submap.locked
+      if( this._dualmap == 0 ) { // single
+        this._submap.locked(true);
+      }
+      else { // dual
+        this._submap.locked(false);
+      }
+    }
+    // 2024-03-16 Added
+    // opacity
+    var opacity_enabled = BO.MapApp._DUALMAP_OPACITY_TYPES[value];
+    this._chiefmap._opacity_control.enabled(opacity_enabled);
+    if( this._submap ) {
+      this._submap._opacity_control.enabled(opacity_enabled);
+    }
+    // refresh view area.
+    if( this._chiefmap._loaded ) {
+      this._chiefmap.propagateInvalidateSize();
+    }
+    return this;
+  }
+  // getter
+  return this._dualmap;
+};
+
 BO.MapApp.prototype.initCommands = function initCommands() {
   var watch_id = null;
   var latest_coords = null;
@@ -203,21 +260,19 @@ BO.MapApp.prototype.initCommands = function initCommands() {
     this._mapconsole.addRevolvingButton(
       null,
       "dualmap",
-      ["singlemap","dualmaph", "dualmapv"],
+      BO.MapApp._DUALMAP_TYPES,
       function(_this){return function(e){
-        localStorage.setItem("dualmap", e.index);
-        // changes styles
-        _this._e_main.className = "bo-map-"+(e.name);
-        // refresh view area.
-        if( _this._chiefmap._loaded ) {
-          _this._chiefmap.propagateInvalidateSize();
-        }
+        // 2024-02-22 Modified
+        // All statements brought out to dualMpa() function.
+       _this.dualMap(e.index);
       };}(this),
       dualmap_index
     );
+    this.dualMap(dualmap_index < 0 ? 0 : dualmap_index);
   }
   else {
-    this._e_main.className = "bo-map-singlemap";
+    // show single map.
+    this.dualMap(0);
   }
   // 2021-04-01 Added: cross (center cross)
   // 2021-04-01 Modified: storage enabled.

@@ -36,6 +36,7 @@ BO.LayerSwitcher = function LayerSwitcher(target, layers, options) {
   this._e_labelwrap = L.DomUtil.create("div", "bo-layercontrol-labelwrap", this._e_root);
   this._e_label = L.DomUtil.create("div", "bo-layercontrol-label", this._e_labelwrap);
   this._e_labelswitch = L.DomUtil.create("div", "bo-layercontrol-labelswitch", this._e_labelwrap);
+  // MEMO: svg.className cannot be set.
   this._svg_tup = BO.createInlineSvg(BO.icons["tup"]);
   this._svg_tdown = BO.createInlineSvg(BO.icons["tdown"]);
   this._e_labelswitch.appendChild(this._svg_tup);
@@ -106,11 +107,11 @@ BO.LayerSwitcher.prototype.activeLayerId = function activeLayerId(id) {
       if( id == this._layers[n].id ) {
         added.push(this._layers[n].layer);
         text = this._layers[n].text; // 2020-04-03 Added
-        this.addClassName(this._items[n], "bo-layercontrol-hit");
+        L.DomUtil.addClass(this._items[n], "bo-layercontrol-hit"); // 2024-03-09 changed: original -> leaflet lib
       }
       else {
         removed.push(this._layers[n].layer);
-        this.removeClassName(this._items[n], "bo-layercontrol-hit");
+        L.DomUtil.removeClass(this._items[n], "bo-layercontrol-hit"); // 2024-03-09 changed: original -> leaflet lib
       }
     }
     // stops onLayerChange handler
@@ -157,69 +158,21 @@ BO.LayerSwitcher.prototype.toggleListVisible = function toggleListVisible() {
 
 BO.LayerSwitcher.prototype.listVisible = function listVisible(visible) {
   if( arguments == null || !(arguments.length > 0) ) {
-    return !(this._e_list.style.visibility == "hidden");
+    return !L.DomUtil.hasClass(this._e_root,"bo-layercontrol-closed"); // 2024-03-09 changed: original -> leaflet lib
   }
   else {
     if( visible ) {
-      this._e_list.style.visibility = "visible";
-      this._e_list.style.height = "auto";
+      L.DomUtil.removeClass(this._e_root,"bo-layercontrol-closed"); // 2024-03-09 changed: original -> leaflet lib
       this._svg_tup.style.display = "inline-block";
       this._svg_tdown.style.display = "none";
     }
     else {
-      this._e_list.style.visibility = "hidden";
-      this._e_list.style.height = "1px";
+      L.DomUtil.addClass(this._e_root,"bo-layercontrol-closed"); // 2024-03-09 changed: original -> leaflet lib
       this._svg_tup.style.display = "none";
       this._svg_tdown.style.display = "inline-block";
     }
-    return this;
   }
 };
-
-/*
-BO.LayerSwitcher.prototype.listVisible = function listVisible(visible) {
-  if( arguments == null || !(arguments.length > 0) ) {
-    return !(this._e_list.style.display == "none");
-  }
-  else {
-    if( visible ) {
-      this._e_list.style.display = "block";
-      this._svg_tup.style.display = "inline-block";
-      this._svg_tdown.style.display = "none";
-    }
-    else {
-      this._e_list.style.display = "none";
-      this._svg_tup.style.display = "none";
-      this._svg_tdown.style.display = "inline-block";
-    }
-    return this;
-  }
-};
-*/
-
-BO.LayerSwitcher.prototype.addClassName = function addClassName(e, cn) {
-  var arr = e.className.split(/\s+/);
-  for( var n = 0; n < arr.length; n++ ) {
-    if( arr[n] == cn ) {
-      return; // already exists.
-    }
-  }
-  e.className = e.className + " " + cn;
-};
-
-BO.LayerSwitcher.prototype.removeClassName = function removeClassName(e, cn) {
-  var arr_now = e.className.split(/\s+/);
-  var className = "";
-  var delimiter = "";
-  for( var n = 0; n < arr_now.length; n++ ) {
-    if( arr_now[n] != cn ) {
-      className = className + delimiter + arr_now[n];
-      delimiter = " ";
-    }
-  }
-  e.className = className;
-}
-
     /**
      * Called when a single layer is removed or added.
      * @param e Event data.
