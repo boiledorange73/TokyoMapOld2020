@@ -5,14 +5,14 @@ plugins {
 
 android {
     namespace = "com.gmail.boiledorange73.app.tokyomapold2020"
-    compileSdk = 34
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.gmail.boiledorange73.app.tokyomapold2020"
         minSdk = 19
-        targetSdk = 34
-        versionCode = 12
-        versionName = "0.9.7"
+        targetSdk = 37
+        versionCode = 14
+        versionName = "0.9.8"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -30,10 +30,13 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
     buildToolsVersion = "34.0.0"
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_1_8)
+    }
 }
 
 dependencies {

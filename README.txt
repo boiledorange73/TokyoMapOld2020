@@ -11,6 +11,12 @@ Or on your browser, visit:
   https://boiledorange73.github.io/TokyoMapOld2020/app/src/main/assets/index.html
 
 Release Note
+0.9.8 - 16th October, 2025
+  * Target SDK changed from 34 to 36 to meet Google Play requirements.
+  * Numerous changes for the Gradle update.
+  * An icon added for the pure web app (Android app is not affected).
+0.9.7 - 16th March, 2024
+  * New map mode appears.
 0.9.6 - 19th August, 2023
   * Android SDK to build was updated.
   * Some property files for gradle were significantly changed.
